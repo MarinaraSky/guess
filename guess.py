@@ -12,10 +12,10 @@ def inputVal(check, rand, guessCount):
             return checkInput(check, rand, guessCount)
         else:
             print(invalidOutput.format(check))
-            return True
+            return True, guessCount
     else:
         print(invalidOutput.format(check))
-        return True
+        return True, guessCount
 
 
 def checkInput(selection, rand, guessCount):
