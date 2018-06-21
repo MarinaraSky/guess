@@ -11,11 +11,16 @@ def inputVal(check, rand, guessCount):
         if (1 <= check <= 100):     # Verifies its within valid range
             return checkInput(check, rand, guessCount)
         else:
-            print(invalidOutput.format(check))
+            invalidInput(check)
             return True, guessCount
     else:
-        print(invalidOutput.format(check))
+        invalidInput(check)
         return True, guessCount
+
+
+def invalidInput(userInput):
+    invalidOut = "{} is invalid input."
+    print(invalidOut.format(userInput))
 
 
 def checkInput(selection, rand, guessCount):
@@ -27,10 +32,9 @@ def checkInput(selection, rand, guessCount):
     else:
         if selection < rand:
             print(selection, "is to low. ")
-            return True, guessCount
         else:
             print(selection, "is to high. ")
-            return True, guessCount
+        return True, guessCount
 
 
 def main():
