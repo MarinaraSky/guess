@@ -6,16 +6,17 @@ def inputVal(check, rand, guessCount):
     '''Function used to return either the user selected integer within valid
     range or print out an error'''
     invalidOutput = "{} is invalid input"
+    returnList = [True, guessCount]
     if check.isdigit():     # Checks if theres non numbers in string
         check = int(check)  # Converts to int object
         if (1 <= check <= 100):     # Verifies its within valid range
-            return checkInput(check, rand, guessCount)
+            return checkInput(check, rand, returnList)
         else:
             invalidInput(check)
-            return True, guessCount
+            return returnList
     else:
         invalidInput(check)
-        return True, guessCount
+        return returnList
 
 
 def invalidInput(userInput):
@@ -23,19 +24,18 @@ def invalidInput(userInput):
     print(invalidOut.format(userInput))
 
 
-def checkInput(selection, rand, guessCount):
+def checkInput(selection, rand, returnList):
     '''Used to check if they guess the number right and return
     high or low statement'''
-    guessCount += 1     # Only increments with valid input
+    returnList[1] += 1     # Only increments with valid input
     if selection == rand:
-        return False, guessCount
+        returnList[0] = False
     else:
         if selection < rand:
             print(selection, "is to low. ")
         else:
             print(selection, "is to high. ")
-        return True, guessCount
-
+    return returnList
 
 def main():
     rand = random.randint(1, 100)
