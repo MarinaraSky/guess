@@ -64,12 +64,9 @@ def amILying(currentGuess):
 
 def main():
     # Checks if -u was passed to enable lying
-    if len(sys.argv) == 2 and sys.argv[1] == "-u":
-        print("Ulam's game Enabled")
+    ulam = False
+    if "-u" in sys.argv:
         ulam = True
-    else:
-        print("Ulam's game Not Enabled")
-        ulam = False
     rand = random.randint(1, 100)
     count = 0
     playing = True
@@ -97,7 +94,7 @@ def main():
                 print(winning.format(count))
             if lied:
                 print("When I said", lied, "that was a lie")
-            elif len(sys.argv) == 2:
+            elif "-u" in sys.argv:
                 print("I did not lie")
 
 if __name__ == "__main__":
