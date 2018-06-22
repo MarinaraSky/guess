@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import random
 import sys
+import pickle
 
 
 def valInput(playerGuess, returnList, rand):
@@ -13,9 +14,11 @@ def valInput(playerGuess, returnList, rand):
             return playGame(playerGuess, rand, returnList)
         else:
             invalidInput(playerGuess)
+            returnList[2] += 1
             return returnList
     else:
         invalidInput(playerGuess)
+        returnList[2] += 1
         return returnList
 
 
@@ -34,18 +37,18 @@ def playGame(playerGuess, rand, returnList):
     if playerGuess == rand:
         returnList[0] = False
     else:
-        if returnList[2]:   # This is checking if Ulam's game is enabled
+        if returnList[3]:   # This is checking if Ulam's game is enabled
             lying = amILying(returnList[1])  # Using the attempt number to lie
         else:
-            lying = returnList[2]   # Ulam's not enabled
+            lying = returnList[3]   # Ulam's not enabled
         if lying:
             if playerGuess < rand:
                 print(high.format(playerGuess))
-                returnList[3] = high.format(playerGuess).replace("is", "was")
+                returnList[4] = high.format(playerGuess).replace("is", "was")
             elif playerGuess > rand:
                 print(low.format(playerGuess))
-                returnList[3] = low.format(playerGuess).replace("is", "was")
-            returnList[2] = False   # Turning off Ulam's mode
+                returnList[4] = low.format(playerGuess).replace("is", "was")
+            returnList[3] = False   # Turning off Ulam's mode
         elif playerGuess < rand:
             print(low.format(playerGuess))
         elif playerGuess > rand:
@@ -62,6 +65,30 @@ def amILying(currentGuess):
         return True
 
 
+def saveStats(count, invalidCount):
+    games = 1
+    newStats = [count, invalidCount, games]
+    oldStats = [0, 0, 0]
+    totalStats = []
+    totalStr = "Valid Guesses: {0}\nInvalid Guesses: {1}\nGames Played: {2}"
+    averageStr = "Average # of guesses: %.2f"
+    try:
+        file = open("stats_guess.txt", "rb")
+        oldStats = pickle.load(file)
+        file.close()
+    except FileNotFoundError:
+        pass
+    with open("stats_guess.txt", "wb+") as file:
+        for x in range(3):
+            totalStats.append(newStats[x] + oldStats[x])
+        pickle.dump(totalStats, file)
+    average = totalStats[0] / totalStats[2]
+    print("*" * 50)
+    print("Running Totals")
+    print(totalStr.format(*totalStats))
+    print(averageStr % average)
+
+
 def main():
     # Checks if -u was passed to enable lying
     ulam = False
@@ -69,12 +96,13 @@ def main():
         ulam = True
     rand = random.randint(1, 100)
     count = 0
+    invalidCount = 0
     playing = True
     winning = "YOU WON in {} guesses."
     lied = ""
     # returnList is used to track if you're still playing, the number
     # of valid attemps, if ulam is in effect, and the lied message
-    returnList = [True, count, ulam, lied]
+    returnList = [True, count, invalidCount,  ulam, lied]
     while playing:     # Loop until they win
         try:
             playerGuess = input("Please guess a number between 1 and 100: ")
@@ -86,7 +114,9 @@ def main():
             else:
                 continue
         # Playing will be False unless they win, guessCount will be returned
-        playing, count, ulam, lied = valInput(playerGuess, returnList, rand)
+        playing, count, invalidCount, ulam, lied = valInput(
+                playerGuess, returnList, rand
+        )
         if playing is False:    # Win Condition
             if count == 1:
                 print(winning.format(count).replace("guesses", "guess"))
@@ -96,6 +126,6 @@ def main():
                 print("When I said", lied, "that was a lie")
             elif "-u" in sys.argv:
                 print("I did not lie")
-
+            saveStats(count, invalidCount)
 if __name__ == "__main__":
     main()
