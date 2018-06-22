@@ -24,7 +24,7 @@ def valInput(playerGuess, returnList, rand):
 
 def invalidInput(playerGuess):
     '''Function to output invalid input string'''
-    invalidOut = "{} is invalid input."
+    invalidOut = "\'{}\' is invalid input."
     print(invalidOut.format(playerGuess))
 
 
@@ -66,6 +66,8 @@ def amILying(currentGuess):
 
 
 def saveStats(count, invalidCount):
+    '''Function called upon winning games, used to track and print
+    total game statistics'''
     games = 1
     newStats = [count, invalidCount, games]
     oldStats = [0, 0, 0]
@@ -74,9 +76,9 @@ def saveStats(count, invalidCount):
     averageStr = "Average # of guesses: %.2f"
     try:
         file = open("stats_guess.txt", "rb")
-        oldStats = pickle.load(file)
+        oldStats = pickle.load(file)    # Grabbing old stats
         file.close()
-    except FileNotFoundError:
+    except FileNotFoundError:   # Silently continue if file is not present
         pass
     with open("stats_guess.txt", "wb+") as file:
         for x in range(3):
