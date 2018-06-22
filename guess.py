@@ -11,7 +11,7 @@ def valInput(playerGuess, returnList, rand):
     if playerGuess.isdigit():     # Checks if theres non numbers in string
         playerGuess = int(playerGuess)  # Converts to int object
         if (1 <= playerGuess <= 100):     # Verifies its within valid range
-            return playGame(playerGuess, rand, returnList)
+            return playGame(playerGuess, rand, returnList)  # Game starts
         else:
             invalidInput(playerGuess)
             returnList[2] += 1
@@ -31,13 +31,13 @@ def invalidInput(playerGuess):
 def playGame(playerGuess, rand, returnList):
     '''Used to check if they guess the number right and return
     high or low statement'''
-    returnList[1] += 1     # Only increments with valid input
+    returnList[1] += 1     # Only increments valid input counter
     high = "{} is to high"
     low = "{} is to low"
     if playerGuess == rand:
         returnList[0] = False
     else:
-        if returnList[3]:   # This is checking if Ulam's game is enabled
+        if returnList[3]:   # Checking if Ulam's game is enabled
             lying = amILying(returnList[1])  # Using the attempt number to lie
         else:
             lying = returnList[3]   # Ulam's not enabled
@@ -80,7 +80,7 @@ def saveStats(count, invalidCount):
         file.close()
     except FileNotFoundError:   # Silently continue if file is not present
         pass
-    with open("stats_guess.txt", "wb+") as file:
+    with open("stats_guess.txt", "wb") as file:
         for x in range(3):
             totalStats.append(newStats[x] + oldStats[x])
         pickle.dump(totalStats, file)
@@ -115,7 +115,9 @@ def main():
                 break
             else:
                 continue
-        # Playing will be False unless they win, guessCount will be returned
+        # Playing will be False unless they win, count and invalidCount
+        # will be returned and incremented, ulam will be if program
+        # can lie, and lied will be the statement that was lied about
         playing, count, invalidCount, ulam, lied = valInput(
                 playerGuess, returnList, rand
         )
@@ -128,6 +130,7 @@ def main():
                 print("When I said", lied, "that was a lie")
             elif "-u" in sys.argv:
                 print("I did not lie")
-            saveStats(count, invalidCount)
+            saveStats(count, invalidCount)  # Print and save stats
+
 if __name__ == "__main__":
     main()
