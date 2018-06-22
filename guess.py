@@ -48,8 +48,12 @@ def main():
         try:
             playerGuess = input("Please guess a number between 1 and 100: ")
         except (KeyboardInterrupt, EOFError):
-            print()
-            break
+            quitting = input("\nAre you sure you want to quit(Y/y): ")
+            if quitting.lower() == "y":
+                print("\nGoodbye...")
+                break
+            else:
+                continue
         # Playing will be False unless they win, guessCount will be returned
         playing, guessCount = validateInput(playerGuess, rand, guessCount)
         if playing is False:    # Win Condition
