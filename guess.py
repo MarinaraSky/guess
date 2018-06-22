@@ -2,40 +2,42 @@
 import random
 
 
-def inputVal(check, rand, guessCount):
+def validateInput(playerGuess, rand, guessCount):
     '''Function used to return either the user selected integer within valid
     range or print out an error'''
     invalidOutput = "{} is invalid input"
     returnList = [True, guessCount]
-    if check.isdigit():     # Checks if theres non numbers in string
-        check = int(check)  # Converts to int object
-        if (1 <= check <= 100):     # Verifies its within valid range
-            return checkInput(check, rand, returnList)
+    if playerGuess.isdigit():     # Checks if theres non numbers in string
+        playerGuess = int(playerGuess)  # Converts to int object
+        if (1 <= playerGuess <= 100):     # Verifies its within valid range
+            return playGame(playerGuess, rand, returnList)
         else:
-            invalidInput(check)
+            invalidInput(playerGuess)
             return returnList
     else:
-        invalidInput(check)
+        invalidInput(playerGuess)
         return returnList
 
 
-def invalidInput(userInput):
+def invalidInput(playerGuess):
+    '''Function to output invalid input string'''
     invalidOut = "{} is invalid input."
-    print(invalidOut.format(userInput))
+    print(invalidOut.format(playerGuess))
 
 
-def checkInput(selection, rand, returnList):
+def playGame(playerGuess, rand, returnList):
     '''Used to check if they guess the number right and return
     high or low statement'''
     returnList[1] += 1     # Only increments with valid input
-    if selection == rand:
+    if playerGuess == rand:
         returnList[0] = False
     else:
-        if selection < rand:
-            print(selection, "is to low. ")
+        if playerGuess < rand:
+            print(playerGuess, "is to low. ")
         else:
-            print(selection, "is to high. ")
+            print(playerGuess, "is to high. ")
     return returnList
+
 
 def main():
     rand = random.randint(1, 100)
@@ -44,12 +46,12 @@ def main():
     winning = "YOU WON in {} guesses."
     while playing:     # Loop until they win
         try:
-            selection = input("Please guess a number between 1 and 100: ")
+            playerGuess = input("Please guess a number between 1 and 100: ")
         except (KeyboardInterrupt, EOFError):
             print()
             break
         # Playing will be False unless they win, guessCount will be returned
-        playing, guessCount = inputVal(selection, rand, guessCount)
+        playing, guessCount = validateInput(playerGuess, rand, guessCount)
         if playing is False:    # Win Condition
             if guessCount == 1:
                 print(winning.format(guessCount).replace("guesses", "guess"))
